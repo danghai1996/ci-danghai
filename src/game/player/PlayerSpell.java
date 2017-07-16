@@ -20,7 +20,7 @@ public class PlayerSpell {
     }
 
     public void move() {
-        this.position.addUp(0, -10);
+        this.position.addUp(0, -20);
     }
 
     public void render(Graphics2D g2d) {

@@ -1,5 +1,6 @@
 package game;
 
+import game.bases.Contraints;
 import game.player.Player;
 import game.player.PlayerSpell;
 
@@ -40,7 +41,8 @@ public class GameWindow extends JFrame {
     public GameWindow() {
         setupWindow();
         loadImage();
-
+        Contraints contraints = new Contraints(20, this.getHeight(), 0, background.getWidth());
+        player.setContraints(contraints);
         player.position.set(background.getWidth() / 2, this.getHeight() - 50);
 
         backgroundY = this.getHeight() - background.getHeight();
@@ -140,16 +142,10 @@ public class GameWindow extends JFrame {
             dy += 5;
         }
         if (xPressed) {
-            //Creat new
-            PlayerSpell playerSpell = new PlayerSpell();
-
-            //Config
-
-            playerSpell.position.set(player.position);
-            //Add to ArrayList
-            playerSpells.add(playerSpell);
+            player.castSpell(playerSpells);
         }
         player.move(dx, dy);
+        player.coolDown();
         for (PlayerSpell playerSpell : playerSpells){
             playerSpell.move();
         }

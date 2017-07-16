@@ -1,5 +1,9 @@
 package game.player;
 
+import game.Utils;
+import game.bases.ImageRenderer;
+import game.bases.Vector2D;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -7,15 +11,19 @@ import java.awt.image.BufferedImage;
  * Created by NHEM on 11/07/2017.
  */
 public class PlayerSpell {
-    public int x;
-    public int y;
-    public BufferedImage image;
+    public Vector2D position;
+    public ImageRenderer imageRenderer;
+
+    public PlayerSpell() {
+        position = new Vector2D();
+        imageRenderer = new ImageRenderer(Utils.loadAssetImage("player-spells/a/1.png"));
+    }
 
     public void move() {
-        y -= 10;
+        this.position.addUp(0, -10);
     }
 
     public void render(Graphics2D g2d) {
-        g2d.drawImage(image, x, y, null);
+        imageRenderer.render(g2d, this.position);
     }
 }

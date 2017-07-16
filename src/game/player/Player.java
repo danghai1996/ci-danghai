@@ -1,5 +1,9 @@
 package game.player;
 
+import game.Utils;
+import game.bases.ImageRenderer;
+import game.bases.Vector2D;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -9,17 +13,20 @@ import java.awt.image.BufferedImage;
 public class Player {
 
     //Properties: Thuoc tinh
-    public int x;
-    public int y;
-    public BufferedImage image;
+    public Vector2D position;
+    public ImageRenderer imageRenderer;
+
+    public Player(){
+        this.position = new Vector2D();
+        this.imageRenderer = new ImageRenderer(Utils.loadAssetImage("players/straight/0.png"));
+    }
 
     //Methods: Phuong thuc
-    public void move(int dx, int dy) {
-        x += dx;
-        y += dy;
+    public void move(float dx, float dy) {
+        this.position.addUp(dx, dy);
     }
 
     public void render(Graphics2D g2d) {
-        g2d.drawImage(image, x, y, null);
+        imageRenderer.render(g2d, this.position);
     }
 }

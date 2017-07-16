@@ -41,9 +41,10 @@ public class GameWindow extends JFrame {
         setupWindow();
         loadImage();
 
+        player.position.set(background.getWidth() / 2, this.getHeight() - 50);
+
         backgroundY = this.getHeight() - background.getHeight();
-        player.x = background.getWidth() / 2;
-        player.y = this.getHeight() - 100 ;
+
         backBufferImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
         backBufferGraphics2D = (Graphics2D) backBufferImage.getGraphics();
 
@@ -106,15 +107,14 @@ public class GameWindow extends JFrame {
         });
     }
 
+    long lastUpdateTime;
     public void loop() {
         while(true) {
-            try {
-                Thread.sleep(17);
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastUpdateTime > 17) {
+                lastUpdateTime = currentTime;
                 run();
                 render();
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -144,13 +144,9 @@ public class GameWindow extends JFrame {
             PlayerSpell playerSpell = new PlayerSpell();
 
             //Config
-            playerSpell.x = player.x;
-            playerSpell.y = player.y;
-            try {
-                playerSpell.image = Utils.loadAssetImage("players/straight/0.png");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+            playerSpell.position.set(player.position);
+            //Add to ArrayList
             playerSpells.add(playerSpell);
         }
         player.move(dx, dy);
@@ -176,12 +172,7 @@ public class GameWindow extends JFrame {
     }
 
     private void loadImage() {
-        try {
             background = Utils.loadAssetImage( "background/0.png");
-            player.image = Utils.loadAssetImage("players/straight/0.png");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void setupWindow() {

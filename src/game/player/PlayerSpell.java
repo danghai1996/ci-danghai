@@ -17,7 +17,8 @@ public class PlayerSpell extends GameObject {
         renderer = new ImageRenderer(Utils.loadAssetImage("player-spells/a/1.png"));
     }
 
-    public void run() {
+    public void run(Vector2D parentPosition) {
+        super.run(parentPosition);
         this.position.addUp(0, -20);
     }
 

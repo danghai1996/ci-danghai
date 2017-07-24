@@ -8,8 +8,11 @@ import java.util.Vector;
  */
 public class GameObject {
 
-    public Vector2D position;
+    public Vector2D position;           //relative
+    public Vector2D screenPosition;     //Screen
+
     public ImageRenderer renderer;
+    public Vector<GameObject> children;
 
     private static Vector<GameObject> gameObjects = new Vector<>();
     private static Vector<GameObject> newGameObjects = new Vector<>();
@@ -25,14 +28,22 @@ public class GameObject {
 
     public static void runAll() {
         for (GameObject gameObject : gameObjects) {
-            gameObject.run();
+            gameObject.run(Vector2D.ZERO);
         }
         gameObjects.addAll(newGameObjects);
         newGameObjects.clear();
+
+        for (int i = 0; i < gameObjects.size() - 1; i++) {
+            for (int j = i + 1; j < gameObjects.size(); j++) {
+
+            }
+        }
     }
 
     public GameObject() {
         this.position = new Vector2D();
+        this.screenPosition = new Vector2D();
+        this.children = new Vector<>();
     }
 
     public void render(Graphics2D g2d) {
@@ -41,9 +52,10 @@ public class GameObject {
         }
     }
 
-    public void run () {
-
+    public void run (Vector2D parentPosition) {
+        this.screenPosition = parentPosition.add(position);
+        for (GameObject child : children) {
+            child.run(this.screenPosition);
+        }
     }
-
-
 }

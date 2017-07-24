@@ -2,10 +2,12 @@ package game;
 
 import game.bases.Contraints;
 import game.bases.GameObject;
+import game.enemies.Enemy;
 import game.enemies.EnemySpawner;
 import game.inputs.InputManager;
 import game.player.Player;
 import game.player.PlayerSpell;
+import game.scenes.Background;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -21,31 +23,25 @@ import java.util.ArrayList;
  */
 public class GameWindow extends JFrame {
 
-    private BufferedImage background;
-
     private BufferedImage spells;
     private int spellsX;
     private int spellsY;
 
-    private int backgroundY ;
 
+    Background background;
     BufferedImage backBufferImage;
     Graphics2D backBufferGraphics2D;
 
-//    Player player = new Player();
-//    ArrayList <PlayerSpell> playerSpells = new ArrayList<>();
 
     InputManager inputManager = new InputManager();
 
     public GameWindow() {
         setupWindow();
-        loadImage();
 
+        addBackground();
         addPlayer();
         addEnemySpawner();
-        addBackground();
 
-        backgroundY = this.getHeight() - background.getHeight();
 
         backBufferImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
         backBufferGraphics2D = (Graphics2D) backBufferImage.getGraphics();
@@ -55,18 +51,24 @@ public class GameWindow extends JFrame {
     }
 
     private void addBackground() {
-
+        background = new Background();
+        background.position.y = this.getHeight();
+        GameObject.add(background);
     }
 
     private void addEnemySpawner() {
+        Enemy enemy = new Enemy();
+        enemy.position.set(background.renderer.getWidth() / 2, 0);
+        GameObject.add(enemy);
+
         GameObject.add(new EnemySpawner());
     }
 
     private void addPlayer() {
         Player player = new Player();
-        player.setContraints(new Contraints(20, this.getHeight(), 0, background.getWidth()));
+        player.setContraints(new Contraints(20, this.getHeight(), 0, background.renderer.getWidth()));
         player.setInputManager(inputManager);
-        player.position.set(background.getWidth() / 2, this.getHeight() - 50);
+        player.position.set(background.renderer.getWidth() / 2, this.getHeight() - 50);
 
         GameObject.add(player);
     }
@@ -103,18 +105,12 @@ public class GameWindow extends JFrame {
     }
 
     public void run() {
-        if (backgroundY < 0) {
-            backgroundY++;
-        }
-
         GameObject.runAll();
     }
 
     public void render() {
         backBufferGraphics2D.setColor(Color.BLACK);
         backBufferGraphics2D.fillRect(0, 0 ,this.getWidth(), this.getHeight());
-
-        backBufferGraphics2D.drawImage(background, 0, backgroundY, null);
 
         GameObject.renderAll(backBufferGraphics2D);
         backBufferGraphics2D.drawImage(spells, spellsX, spellsY, null );
@@ -124,15 +120,10 @@ public class GameWindow extends JFrame {
         g2d.drawImage(backBufferImage, 0, 0, null);
     }
 
-    private void loadImage() {
-            background = Utils.loadAssetImage( "background/0.png");
-    }
-
     private void setupWindow() {
         this.setSize(600, 600);
         this.setResizable(false);
         this.setTitle("Tohou - Remade by Nhem");
-
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

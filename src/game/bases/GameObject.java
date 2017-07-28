@@ -1,5 +1,9 @@
 package game.bases;
 
+import game.bases.physics.Physics;
+import game.bases.physics.PhysicsBody;
+import game.bases.renderers.Renderer;
+
 import java.awt.*;
 import java.util.Vector;
 
@@ -11,7 +15,9 @@ public class GameObject {
     public Vector2D position;           //relative
     public Vector2D screenPosition;     //Screen
 
-    public ImageRenderer renderer;
+    public boolean isActive;
+
+    public Renderer renderer;
     public Vector<GameObject> children;
 
     private static Vector<GameObject> gameObjects = new Vector<>();
@@ -19,31 +25,39 @@ public class GameObject {
 
     public static void add(GameObject gameObject) {
         newGameObjects.add(gameObject);
+        if (gameObject instanceof PhysicsBody) {
+            Physics.add((PhysicsBody) gameObject);
+        }
     }
+
+
+
     public static void renderAll(Graphics2D g2d) {
         for(GameObject gameObject : gameObjects) {
-            gameObject.render(g2d);
+            if (gameObject.isActive)
+                gameObject.render(g2d);
         }
     }
 
     public static void runAll() {
         for (GameObject gameObject : gameObjects) {
-            gameObject.run(Vector2D.ZERO);
+            if (gameObject.isActive)
+                gameObject.run(Vector2D.ZERO);
         }
         gameObjects.addAll(newGameObjects);
         newGameObjects.clear();
-
-        for (int i = 0; i < gameObjects.size() - 1; i++) {
-            for (int j = i + 1; j < gameObjects.size(); j++) {
-
-            }
-        }
+        //System.out.println(gameObjects.size());
     }
 
     public GameObject() {
         this.position = new Vector2D();
         this.screenPosition = new Vector2D();
         this.children = new Vector<>();
+        this.isActive = true;
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 
     public void render(Graphics2D g2d) {
@@ -57,5 +71,9 @@ public class GameObject {
         for (GameObject child : children) {
             child.run(this.screenPosition);
         }
+    }
+
+    public void setActive(boolean active) {
+        this.isActive = active;
     }
 }

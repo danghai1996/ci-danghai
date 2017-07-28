@@ -1,9 +1,8 @@
 package game.enemies;
 
 import game.Utils;
-import game.bases.FrameCounter;
 import game.bases.GameObject;
-import game.bases.ImageRenderer;
+import game.bases.renderers.ImageRenderer;
 import game.bases.Vector2D;
 
 public class EnemyBullet extends GameObject {
@@ -20,5 +19,8 @@ public class EnemyBullet extends GameObject {
     public void run(Vector2D parentPosition) {
         super.run(parentPosition);
         this.position.addUp(velocity);
+        if (this.position.y > 600) {
+            this.isActive = false;
+        }
     }
 }

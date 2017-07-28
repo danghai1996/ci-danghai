@@ -23,11 +23,6 @@ import java.util.ArrayList;
  */
 public class GameWindow extends JFrame {
 
-    private BufferedImage spells;
-    private int spellsX;
-    private int spellsY;
-
-
     Background background;
     BufferedImage backBufferImage;
     Graphics2D backBufferGraphics2D;
@@ -58,7 +53,7 @@ public class GameWindow extends JFrame {
 
     private void addEnemySpawner() {
         Enemy enemy = new Enemy();
-        enemy.position.set(background.renderer.getWidth() / 2, 0);
+        enemy.position.set(background.getWidth() / 2, 0);
         GameObject.add(enemy);
 
         GameObject.add(new EnemySpawner());
@@ -66,9 +61,9 @@ public class GameWindow extends JFrame {
 
     private void addPlayer() {
         Player player = new Player();
-        player.setContraints(new Contraints(20, this.getHeight(), 0, background.renderer.getWidth()));
+        player.setContraints(new Contraints(20, this.getHeight(), 0, background.getWidth()));
         player.setInputManager(inputManager);
-        player.position.set(background.renderer.getWidth() / 2, this.getHeight() - 50);
+        player.position.set(background.getWidth() / 2, this.getHeight() - 50);
 
         GameObject.add(player);
     }
@@ -113,7 +108,6 @@ public class GameWindow extends JFrame {
         backBufferGraphics2D.fillRect(0, 0 ,this.getWidth(), this.getHeight());
 
         GameObject.renderAll(backBufferGraphics2D);
-        backBufferGraphics2D.drawImage(spells, spellsX, spellsY, null );
 
         Graphics2D g2d = (Graphics2D)this.getGraphics();
 

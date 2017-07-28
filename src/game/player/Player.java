@@ -2,12 +2,8 @@ package game.player;
 
 import game.Utils;
 import game.bases.*;
+import game.bases.renderers.ImageRenderer;
 import game.inputs.InputManager;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * Created by NHEM on 11/07/2017.
@@ -36,13 +32,14 @@ public class Player extends GameObject {
         super.run(parentPosition);
         move();
         castSpell();
+        coolDown();
     }
 
     private void castSpell() {
-        if (inputManager.xPressed) {
-            PlayerSpell playerSpell = new PlayerSpell();
+        if (inputManager.xPressed && !spellDisabled) {
+            PlayerSpell playerSpell = GameObjectPool.recycle(PlayerSpell.class);
             playerSpell.position.set(this.position.add(0, -20));
-            GameObject.add(playerSpell);
+            spellDisabled = true;
         }
     }
 
@@ -62,16 +59,16 @@ public class Player extends GameObject {
         this.contraints.make(this.position);
     }
 
-    public void castSpell(ArrayList<PlayerSpell> playerSpells) {
-        //cast spell
-        if (!spellDisabled) {
-            PlayerSpell playerSpell = new PlayerSpell();
-            playerSpell.position.set(this.position.add(0, -20));
-            playerSpells.add(playerSpell);
-
-            spellDisabled = true;
-        }
-    }
+//    public void castSpell(ArrayList<PlayerSpell> playerSpells) {
+//        //cast spell
+//        if (!spellDisabled) {
+//            PlayerSpell playerSpell = new PlayerSpell();
+//            playerSpell.position.set(this.position.add(0, -20));
+//            playerSpells.add(playerSpell);
+//
+//            spellDisabled = true;
+//        }
+//    }
 
     public void coolDown() {
         //cooldown

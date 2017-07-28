@@ -1,4 +1,7 @@
-package game.bases;
+package game.bases.renderers;
+
+import game.bases.Vector2D;
+import game.bases.renderers.Renderer;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -6,7 +9,7 @@ import java.awt.image.BufferedImage;
 /**
  * Created by NHEM on 16/07/2017.
  */
-public class ImageRenderer {
+public class ImageRenderer implements Renderer {
     public BufferedImage image;
     public Vector2D anchor;
 

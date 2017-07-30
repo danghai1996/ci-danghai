@@ -52,10 +52,6 @@ public class GameWindow extends JFrame {
     }
 
     private void addEnemySpawner() {
-        Enemy enemy = new Enemy();
-        enemy.position.set(background.getWidth() / 2, 0);
-        GameObject.add(enemy);
-
         GameObject.add(new EnemySpawner());
     }
 

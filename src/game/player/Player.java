@@ -16,13 +16,15 @@ public class Player extends GameObject {
     FrameCounter coolDownCounter;
     boolean spellDisabled;
     Vector2D velocity;
+    private PlayerAnimator playerAnimator;
 
     public static Player instance;
 
     public Player(){
         this.velocity = new Vector2D();
-        this.coolDownCounter = new FrameCounter(17); // 17 = 300 miliseconds to cooldown
-        this.renderer = new ImageRenderer(Utils.loadAssetImage("players/straight/0.png"));
+        this.coolDownCounter = new FrameCounter(10); // 17 = 300 miliseconds to cooldown
+        this.playerAnimator = new PlayerAnimator();
+        this.renderer = playerAnimator;
 
         instance = this;
     }
@@ -30,9 +32,14 @@ public class Player extends GameObject {
     @Override
     public void run(Vector2D parentPosition) {
         super.run(parentPosition);
+        animate();
         move();
         castSpell();
         coolDown();
+    }
+
+    private void animate() {
+        playerAnimator.run(this);
     }
 
     private void castSpell() {

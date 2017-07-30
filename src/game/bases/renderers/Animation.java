@@ -14,14 +14,21 @@ public class Animation implements Renderer {
     private List<BufferedImage> images;
     private int imageIndex;
     private FrameCounter frameCounter;
+    private boolean finished;
+    private boolean repeat;
 
-    public Animation(int delayFrame, BufferedImage... imagesArr) {
+    public Animation(int delayFrame, boolean repeat, BufferedImage... imagesArr) {
         this.images = Arrays.asList(imagesArr);
         frameCounter = new FrameCounter(delayFrame);
+        this.repeat = repeat;
     }
 
     public Animation(BufferedImage... imagesArr) {
-        this(3, imagesArr);
+        this(3, true, imagesArr);
+    }
+
+    public boolean isFinished() {
+        return finished;
     }
 
     @Override
@@ -38,9 +45,18 @@ public class Animation implements Renderer {
     }
 
     private void changeIndex() {
-        imageIndex++;
-        if (imageIndex >= images.size()) {
-            imageIndex = 0;
+        if (imageIndex >= images.size() - 1) {
+            if (repeat) {
+                imageIndex = 0;
+            }
+            finished = true;
+        } else {
+            imageIndex++;
         }
+    }
+
+    public void reset() {
+        imageIndex = 0;
+        finished = false;
     }
 }

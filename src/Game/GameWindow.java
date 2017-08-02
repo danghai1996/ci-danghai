@@ -7,7 +7,7 @@ import game.enemies.EnemySpawner;
 import game.inputs.InputManager;
 import game.player.Player;
 import game.player.PlayerSpell;
-import game.scenes.Background;
+import game.scenes.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -23,45 +23,32 @@ import java.util.ArrayList;
  */
 public class GameWindow extends JFrame {
 
-    Background background;
+
     BufferedImage backBufferImage;
     Graphics2D backBufferGraphics2D;
 
+    InputManager inputManager = InputManager.instance;
 
-    InputManager inputManager = new InputManager();
+    Scenes startupScenes;
 
     public GameWindow() {
         setupWindow();
-
-        addBackground();
-        addPlayer();
-        addEnemySpawner();
-
-
-        backBufferImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        backBufferGraphics2D = (Graphics2D) backBufferImage.getGraphics();
-
+        setupBackBuffer();
         setupInput();
+        setupStartupScenes();
         this.setVisible(true);
     }
 
-    private void addBackground() {
-        background = new Background();
-        background.position.y = this.getHeight();
-        GameObject.add(background);
+    private void setupStartupScenes() {
+//        Level1Scenes level1Scenes = new Level1Scenes();
+//        level1Scenes.init();
+        startupScenes = new MenuScenes();
+        startupScenes.init();
     }
 
-    private void addEnemySpawner() {
-        GameObject.add(new EnemySpawner());
-    }
-
-    private void addPlayer() {
-        Player player = new Player();
-        player.setContraints(new Contraints(20, this.getHeight(), 0, background.getWidth()));
-        player.setInputManager(inputManager);
-        player.position.set(background.getWidth() / 2, this.getHeight() - 50);
-
-        GameObject.add(player);
+    private void setupBackBuffer() {
+        backBufferImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        backBufferGraphics2D = (Graphics2D) backBufferImage.getGraphics();
     }
 
     private void setupInput() {
@@ -97,6 +84,9 @@ public class GameWindow extends JFrame {
 
     public void run() {
         GameObject.runAll();
+        GameObject.runAllAction();
+        //change Scenes
+        SceneManager.instance.changeSceneIfNeed();
     }
 
     public void render() {
@@ -111,7 +101,7 @@ public class GameWindow extends JFrame {
     }
 
     private void setupWindow() {
-        this.setSize(600, 600);
+        this.setSize(Settings.WINDOW_WIDTH, Settings.WINDOW_HEIGHT);
         this.setResizable(false);
         this.setTitle("Tohou - Remade by Nhem");
         this.addWindowListener(new WindowAdapter() {

@@ -1,10 +1,13 @@
 package game.bases;
 
+import game.bases.actions.Action;
 import game.bases.physics.Physics;
 import game.bases.physics.PhysicsBody;
 import game.bases.renderers.Renderer;
 
 import java.awt.*;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -18,7 +21,9 @@ public class GameObject {
     public boolean isActive;
 
     public Renderer renderer;
-    public Vector<GameObject> children;
+    protected Vector<GameObject> children;
+    private Vector<Action> actions;
+    private List<Action> newAction;
 
     private static Vector<GameObject> gameObjects = new Vector<>();
     private static Vector<GameObject> newGameObjects = new Vector<>();
@@ -29,8 +34,6 @@ public class GameObject {
             Physics.add((PhysicsBody) gameObject);
         }
     }
-
-
 
     public static void renderAll(Graphics2D g2d) {
         for(GameObject gameObject : gameObjects) {
@@ -49,10 +52,26 @@ public class GameObject {
         //System.out.println(gameObjects.size());
     }
 
+    public static void runAllAction() {
+        for (GameObject gameObject : gameObjects) {
+            if (gameObject.isActive) {
+                gameObject.runAction();
+            }
+        }
+    }
+
+    public static void clear() {
+        gameObjects.clear();
+        GameObjectPool.clear();
+        Physics.clear();
+    }
+
     public GameObject() {
         this.position = new Vector2D();
         this.screenPosition = new Vector2D();
         this.children = new Vector<>();
+        this.actions = new Vector<>();
+        this.newAction = new Vector<>();
         this.isActive = true;
     }
 
@@ -73,8 +92,27 @@ public class GameObject {
         }
     }
 
+    public void runAction() {
+        Iterator<Action> iterator = actions.iterator();
+        while (iterator.hasNext()) {
+            Action action = iterator.next();
+            boolean actionDone = action.run(this);
+            if (actionDone) {
+                iterator.remove();
+            }
+        }
+        actions.addAll(newAction);
+        newAction.clear();
+    }
+
+    public void addAction(Action action) {
+        newAction.add(action);
+    }
+
     public void refresh() {
         isActive = true;
+        this.actions.clear();
+        this.newAction.clear();
     }
 
     public void setActive(boolean active) {
